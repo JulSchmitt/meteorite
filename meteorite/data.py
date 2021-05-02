@@ -2,7 +2,6 @@
 of each painting image"""
 
 
-
 def get_image(image_path):
     # get image into python in the RBG space
     image = cv2.imread(image_path)
