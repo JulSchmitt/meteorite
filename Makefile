@@ -59,3 +59,32 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+
+# ----------------------------------
+#            GOOGLE CLOUD
+# ----------------------------------
+# initial setup
+
+
+PROJECT_ID=meteorite-color-detector  # Replace with your Project's ID
+
+BUCKET_NAME=meteorite-color-detector-bucket # Use your Project's name as it should be unique
+
+REGION=europe-west1 # Choose your region https://cloud.google.com/storage/docs/locations#available_locations
+
+set_project:
+	@gcloud config set project ${PROJECT_ID}
+
+create_bucket:
+	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
+
+
+# upload data
+LOCAL_PATH_IMAGES="raw_data/image_file"
+BUCKET_FOLDER=data
+BUCKET_FILE_NAME_IMAGES=$(shell basename ${LOCAL_PATH_IMAGES})
+
+upload_images:
+	@gsutil -o "GSUtil:parallel_process_count=1" -m cp -r ${LOCAL_PATH_IMAGES} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME_IMAGES}
+
